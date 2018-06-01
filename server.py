@@ -9,6 +9,8 @@ from flask_limiter.util import get_remote_address
 from validators import ipv4, ipv6
 from geoip2.database import Reader
 
+from utils import prepare_response, error
+
 # Initalize logger
 logger = logging.getLogger("geoip")
 logging.basicConfig(level=logging.DEBUG)
@@ -25,14 +27,29 @@ app.config.from_object(config)
 # Initialize limiter
 limiter = Limiter(app, key_func=get_remote_address)
 
-@app.route("/<ip_address>", methods=["GET"])
+# API Docs and about page
+@app.route("/")
+def index():
+    return "Hello World!"
+
+# Return geolocation data for provided IP address, with different language optional
+@app.route("/<ip_address>", defaults={"language": config.LANGUAGE})
+@app.route("/<ip_address>/<language>")
 @limiter.limit(config.RATE_LIMIT)
-def geoip(ip_address):
+def geoip(ip_address, language):
+    # Check if output format is json or xml
+    output_format = request.args.get("output_format") or config.OUTPUT_FORMAT
+    if output_format not in ("json", "xml"):
+        return error("Wrong output format selected!", 400)
+
+    # Check if output format has been requested and validate callback
+    callback = request.args.get("callback")
+    if callback is not None and output_format != "json":
+        return error("You cannot request a jsonp callback when the output format is xml!", 400)
+
     # Check if ip_address is a valid IPv4 or IPv6 address
     if not ipv4(ip_address) and not ipv6(ip_address):
-        return jsonify({
-            "message": ip_address + " does not appear to be an IPv4 or IPv6 address" 
-        }), 400
+        return error(ip_address + " does not appear to be an IPv4 or IPv6 address", 400)
 
     # Try to fetch data from GeoLite2 databases
     try:
@@ -61,13 +78,7 @@ def geoip(ip_address):
 
     return jsonify(response)
 
-@app.route("/", methods=["GET"])
-@limiter.limit(config.RATE_LIMIT)
-def mygeoip():
-    # Check if an IP address got specified as parameter or return visitors IP
-    return geoip(request.args.get("ip") or request.remote_addr)
-    
+# Give a unfunny 404 not found message back
 @app.errorhandler(404)
 def not_found(e):
-    # Give a unfunny 404 not found message back
-    return jsonify({"message": "What are you even looking here for?"}), 404
+    return error("What are you even looking here for?", 404)
