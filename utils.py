@@ -8,6 +8,7 @@ from dicttoxml import dicttoxml as output_xml
 # Turn off log output for dicttoxml
 dicttoxml.set_debug(config.DEBUG)
 
+# Prepare custom Flask response with additional options like CORS enabled
 def prepare_response(data, status, output_format="json", callback=None, root="geoip"):
     if output_format == "json":
         response = json.dumps(data, skipkeys=True)
@@ -26,5 +27,6 @@ def prepare_response(data, status, output_format="json", callback=None, root="ge
         },
         mimetype="application/" + output_format)
 
+# Return response with error code and custom XML root
 def error(message, status, output_format="json", callback=None):
     return prepare_response({"message": message}, status, output_format, callback, "error")
