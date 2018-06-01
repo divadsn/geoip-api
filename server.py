@@ -57,26 +57,37 @@ def geoip(ip_address, language):
         country = geocountry.country(ip_address)
         asn = geoasn.asn(ip_address)
     except Exception as ex:
-        return jsonify({"message": str(ex)}), 500
+        return error(str(ex), 500, output_format, callback)
 
     # Build response object
     response = {
         "ip_address": ip_address,
+        "hostname": "",
         "city": {
-            "":""
+            "name": city.city.names[language],
+            "id": city.city.geoname_id
         },
-        "county": {
-            "":""
+        "country": {
+            "name": country.country.names[language],
+            "iso_code": country.country.iso_code,
+            "continent": country.continent.names[language],
+            "continent_code": country.continent.code,
+            "is_eu": country.country.is_in_european_union
         },
         "location": {
-            "":""
+            "accuracy_radius": city.location.accuracy_radius,
+            "zip": city.postal.code,
+            "latitude": city.location.latitude,
+            "longitude": city.location.longitude,
+            "timezone": city.location.time_zone,
         },
         "asn": {
-            "":""
+            "name": asn.autonomous_system_organization,
+            "id": asn.autonomous_system_number
         }
     }
 
-    return jsonify(response)
+    return prepare_response(response, 200, output_format, callback)
 
 # Give a unfunny 404 not found message back
 @app.errorhandler(404)
