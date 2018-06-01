@@ -49,7 +49,7 @@ def geoip(ip_address, language):
 
     # Check if ip_address is a valid IPv4 or IPv6 address
     if not ipv4(ip_address) and not ipv6(ip_address):
-        return error(ip_address + " does not appear to be an IPv4 or IPv6 address", 400)
+        return error(ip_address + " does not appear to be an IPv4 or IPv6 address", 400, output_format, callback)
 
     # Try to fetch data from GeoLite2 databases
     try:
