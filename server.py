@@ -1,24 +1,16 @@
 import config
 import logging
-import json
-from os import path
 
 from flask import Flask, Response, request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from validators import ipv4, ipv6
-from geoip2.database import Reader
 
-from utils import prepare_response, error
+from utils import fetch_geoip, prepare_response, error
 
 # Initalize logger
 logger = logging.getLogger("geoip")
 logging.basicConfig(level=logging.DEBUG)
-
-# Load GeoLite2 databases
-geocity = Reader(path.join(config.MMDB_PATH, "GeoLite2-City.mmdb"))
-geocountry = Reader(path.join(config.MMDB_PATH, "GeoLite2-Country.mmdb"))
-geoasn = Reader(path.join(config.MMDB_PATH, "GeoLite2-ASN.mmdb"))
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -53,41 +45,11 @@ def geoip(ip_address, language):
 
     # Try to fetch data from GeoLite2 databases
     try:
-        city = geocity.city(ip_address)
-        country = geocountry.country(ip_address)
-        asn = geoasn.asn(ip_address)
+        data = fetch_geoip(ip_address, language)
     except Exception as ex:
         return error(str(ex), 500, output_format, callback)
 
-    # Build response object
-    response = {
-        "ip_address": ip_address,
-        "hostname": "",
-        "city": {
-            "name": city.city.names[language],
-            "id": city.city.geoname_id
-        },
-        "country": {
-            "name": country.country.names[language],
-            "iso_code": country.country.iso_code,
-            "continent": country.continent.names[language],
-            "continent_code": country.continent.code,
-            "is_eu": country.country.is_in_european_union
-        },
-        "location": {
-            "accuracy_radius": city.location.accuracy_radius,
-            "zip": city.postal.code,
-            "latitude": city.location.latitude,
-            "longitude": city.location.longitude,
-            "timezone": city.location.time_zone,
-        },
-        "asn": {
-            "name": asn.autonomous_system_organization,
-            "id": asn.autonomous_system_number
-        }
-    }
-
-    return prepare_response(response, 200, output_format, callback)
+    return prepare_response(data, 200, output_format, callback)
 
 # Give a unfunny 404 not found message back
 @app.errorhandler(404)
