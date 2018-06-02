@@ -6,8 +6,8 @@ ENV PYTHONIOENCODING utf-8
 
 # Install python along with virtualenv
 RUN apk add --no-cache --update \
-        python \
-        python-dev \
+        python3 \
+        python3-dev \
         py-pip \
         build-base \
         git \
@@ -31,7 +31,7 @@ RUN git clone $GIT_REPO /src && \
     rm -rf /src/.git && \
     cd /src && virtualenv -p python3 .venv && \
     source .venv/bin/activate && \
-    pip install -r < requirements.txt
+    pip install -r requirements.txt
 
 WORKDIR /src
 EXPOSE 8069
