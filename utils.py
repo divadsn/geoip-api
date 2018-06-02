@@ -1,6 +1,6 @@
 import json
 import dicttoxml
-import config
+import config # TODO: Read config values from app.config
 import socket
 from os import path
 
@@ -76,7 +76,7 @@ def fetch_geoip(ip_address, language=None):
 def fetch_asn(ip_address):
     # Check if INCLUDE_ASN is True before proceeding
     if not config.INCLUDE_ASN:
-        return {}
+        return None
 
     # Load GeoLite2 ASN database
     geoasn = Reader(path.join(config.MMDB_PATH, "GeoLite2-ASN.mmdb"))
