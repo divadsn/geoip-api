@@ -46,7 +46,7 @@ def geoip(ip_address, language):
 
     # Try to fetch data from GeoLite2 databases
     try:
-        data = fetch_geoip(ip_address, language)
+        data = fetch_geoip(ip_address) # TODO: Add multi-language support
     except Exception as ex:
         return error(str(ex), 500, output_format, callback)
 
