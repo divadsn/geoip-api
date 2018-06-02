@@ -16,5 +16,5 @@ services:
     image: tkrs/maxmind-geoipupdate:latest
     restart: always
     volumes:
-      - ./data:/usr/local/share/GeoIP
+      - ./data:/usr/share/GeoIP
 
