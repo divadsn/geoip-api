@@ -96,12 +96,13 @@ def fetch_asn(ip_address):
 
 # Prepare custom Flask response with additional options like CORS enabled
 def prepare_response(data, status, output_format="json", callback=None, root="geoip"):
-    # Default to json if wrong or no output_format provided
-    if output_format == "xml":
+    if output_format == "json":
+        response = json.dumps(data, skipkeys=True)
+    elif output_format == "xml":
         response = output_xml(data, custom_root=root, attr_type=False)
     else:
-        response = json.dumps(data, skipkeys=True)
-        
+        return error("Unknown output format %s" % output_format, 500)
+
     # Apply custom decorator for JSONP
     if callback is not None and output_format == "json":
         response = "%s(%s)" % (callback, response)
