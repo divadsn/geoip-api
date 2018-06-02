@@ -30,15 +30,9 @@ def index():
 @app.route("/<ip_address>/<language>")
 @limiter.limit(app.config['RATE_LIMIT'])
 def geoip(ip_address, language):
-    # Check if output format is json or xml
+    # Get additional parameters from request
     output_format = request.args.get("output_format") or app.config['OUTPUT_FORMAT']
-    if output_format not in ("json", "xml"):
-        return error("Wrong output format selected!", 400)
-
-    # Check if output format has been requested and validate callback
     callback = request.args.get("callback")
-    if callback is not None and output_format != "json":
-        return error("You cannot request a jsonp callback when the output format is xml!", 400)
 
     # Check if ip_address is a valid IPv4 or IPv6 address
     if not ipv4(ip_address) and not ipv6(ip_address):
@@ -48,7 +42,7 @@ def geoip(ip_address, language):
     try:
         data = fetch_geoip(ip_address) # TODO: Add multi-language support
     except Exception as ex:
-        return error(str(ex), 500, output_format, callback)
+        return error(str(ex), 404, output_format, callback)
 
     return prepare_response(data, 200, output_format, callback)
 
