@@ -1,0 +1,20 @@
+version: '2.1'
+
+services:
+  geoip-api:
+    image: divadsn/geoip-api:latest
+    restart: always
+    depends_on:
+      - geoip-update
+    ports:
+      - 8069:8069/tcp
+    volumes:
+      - ./data:/src/data
+      - ./config.py:/src/config.py
+
+  geoip-update:
+    image: tkrs/maxmind-geoipupdate:latest
+    restart: always
+    volumes:
+      - ./data:/usr/local/share/GeoIP
+
