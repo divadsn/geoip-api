@@ -1,10 +1,11 @@
 import config
 import logging
 
-from flask import Flask, Response, request, jsonify
+from flask import Flask, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from validators import ipv4, ipv6
+from waitress import serve
 
 from utils import fetch_geoip, prepare_response, error
 
@@ -25,12 +26,12 @@ def index():
     return "Hello World!"
 
 # Return geolocation data for provided IP address, with different language optional
-@app.route("/<ip_address>", defaults={"language": config.LANGUAGE})
+@app.route("/<ip_address>", defaults={"language": app.config['LANGUAGE']})
 @app.route("/<ip_address>/<language>")
-@limiter.limit(config.RATE_LIMIT)
+@limiter.limit(app.config['RATE_LIMIT'])
 def geoip(ip_address, language):
     # Check if output format is json or xml
-    output_format = request.args.get("output_format") or config.OUTPUT_FORMAT
+    output_format = request.args.get("output_format") or app.config['OUTPUT_FORMAT']
     if output_format not in ("json", "xml"):
         return error("Wrong output format selected!", 400)
 
@@ -55,3 +56,7 @@ def geoip(ip_address, language):
 @app.errorhandler(404)
 def not_found(e):
     return error("What are you even looking here for?", 404)
+
+# Run the app!
+if __name__ == "__main__":
+    serve(app, host=app.config['LISTEN_ADDR'], port=app.config['PORT'])
