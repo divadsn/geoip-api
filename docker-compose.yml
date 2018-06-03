@@ -3,6 +3,7 @@ version: '2.1'
 services:
   geoip-api:
     image: divadsn/geoip-api:latest
+
     restart: always
     depends_on:
       - geoip-update
@@ -13,9 +14,10 @@ services:
       - ./config.py:/src/config.py
 
   geoip-update:
-    image: tkrs/maxmind-geoipupdate:latest
+    image: wuakitv/geoipupdate:latest
+    command: /etc/conf/GeoIP.conf
+
     restart: always
     volumes:
-      - ./data/GeoIP:/usr/share/GeoIP
-      - ./data/GeoIP.conf:/usr/etc/GeoIP.conf
-
+      - ./data/GeoIP:/geodata
+      - ./data/GeoIP.conf:/etc/conf/GeoIP.conf
