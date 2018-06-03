@@ -3,21 +3,17 @@ version: '2.1'
 services:
   geoip-api:
     image: divadsn/geoip-api:latest
-
     restart: always
     depends_on:
       - geoip-update
     ports:
       - 8069:8069/tcp
     volumes:
-      - ./data/GeoIP:/usr/share/GeoIP
+      - ./data:/usr/share/GeoIP
       - ./config.py:/src/config.py
 
   geoip-update:
-    image: wuakitv/geoipupdate:latest
-    command: /etc/conf/GeoIP.conf
-
+    image: tkrs/maxmind-geoipupdate:latest
     restart: always
     volumes:
-      - ./data/GeoIP:/geodata
-      - ./data/GeoIP.conf:/etc/conf/GeoIP.conf
+      - ./data:/usr/share/GeoIP
