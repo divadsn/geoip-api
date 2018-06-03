@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.config.from_object(config)
 
 # Initialize limiter
-limiter = Limiter(app, key_func=get_remote_address)
+limiter = Limiter(app, key_func=get_remote_address, default_limits=[app.config['RATE_LIMIT']])
 
 # API Docs and about page
 @app.route("/")
@@ -28,7 +28,6 @@ def index():
 # Return geolocation data for provided IP address, with different language optional
 @app.route("/<ip_address>", defaults={"language": app.config['LANGUAGE']})
 @app.route("/<ip_address>/<language>")
-@limiter.limit(app.config['RATE_LIMIT'])
 def geoip(ip_address, language):
     # Get additional parameters from request
     output_format = request.args.get("output_format") or app.config['OUTPUT_FORMAT']
@@ -50,6 +49,11 @@ def geoip(ip_address, language):
 @app.errorhandler(404)
 def not_found(e):
     return error("What are you even looking here for?", 404)
+
+# Return an error if ratelimit has been exceeded
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return error("Ratelimit exceeded %s" % e.description, 429)
 
 # Run the app!
 if __name__ == "__main__":
