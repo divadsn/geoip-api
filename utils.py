@@ -65,10 +65,6 @@ def fetch_geoip(ip_address, language=None):
     # Load GeoLite2 ASN database (optional)
     response['asn'] = fetch_asn(ip_address)
 
-    # Strip off empty sections
-    for k in [k for k,v in response.items() if not v or None]:
-        del response[k]
-
     # Return built response object
     return response
 
@@ -103,15 +99,17 @@ def prepare_response(data, status, output_format="json", callback=None, root="ge
     else:
         return error("Unknown output format %s" % output_format, 500)
 
-    # Apply custom decorator for JSONP
+    # Apply custom decorator for JSONP and change output_format
     if callback is not None and output_format == "json":
         response = "%s(%s)" % (callback, response)
+        output_format = "javascript"
 
     return Response(
         response=response,
         status=status,
         headers={
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "*",
+            "X-Powered-By": "python:divadsn/geoip-api"
         },
         mimetype="application/" + output_format)
 
