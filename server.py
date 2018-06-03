@@ -1,5 +1,4 @@
 import config
-import logging
 
 from flask import Flask, request
 from flask_limiter import Limiter
@@ -8,10 +7,6 @@ from validators import ipv4, ipv6
 from waitress import serve
 
 from utils import fetch_geoip, prepare_response, error
-
-# Initalize logger
-logger = logging.getLogger("geoip")
-logging.basicConfig(level=logging.DEBUG)
 
 # Initialize Flask app
 app = Flask(__name__)
