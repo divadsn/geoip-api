@@ -9,12 +9,13 @@ services:
     ports:
       - 8069:8069/tcp
     volumes:
-      - ./data:/src/data
+      - ./data/GeoIP:/usr/share/GeoIP
       - ./config.py:/src/config.py
 
   geoip-update:
     image: tkrs/maxmind-geoipupdate:latest
     restart: always
     volumes:
-      - ./data:/usr/share/GeoIP
+      - ./data/GeoIP:/usr/share/GeoIP
+      - ./data/GeoIP.conf:/usr/etc/GeoIP.conf
 
