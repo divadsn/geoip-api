@@ -41,6 +41,10 @@ def geoip(ip_address, language):
     # Add useragent data to response
     data['useragent'] = parse_useragent(request.user_agent.string)
 
+    # Strip off empty sections
+    for k in [k for k,v in data.items() if not v or None]:
+        del data[k]
+
     return prepare_response(data, 200, output_format, callback)
 
 # Give a unfunny 404 not found message back
