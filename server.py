@@ -6,7 +6,7 @@ from flask_limiter.util import get_remote_address
 from validators import ipv4, ipv6
 from waitress import serve
 
-from utils import fetch_geoip, prepare_response, error
+from utils import fetch_geoip, parse_useragent, prepare_response, error
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -37,6 +37,9 @@ def geoip(ip_address, language):
         data = fetch_geoip(ip_address) # TODO: Add multi-language support
     except Exception as ex:
         return error(str(ex), 404, output_format, callback)
+
+    # Add useragent data to response
+    data['useragent'] = parse_useragent(request.user_agent.string)
 
     return prepare_response(data, 200, output_format, callback)
 

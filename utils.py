@@ -8,6 +8,7 @@ from flask import Response
 from dicttoxml import dicttoxml as output_xml
 from geoip2.database import Reader
 from geoip2.errors import AddressNotFoundError
+from user_agents import parse
 
 # Turn off log output for dicttoxml
 dicttoxml.set_debug(config.DEBUG)
@@ -89,6 +90,15 @@ def fetch_asn(ip_address):
     finally:
         geoasn.close()
     
+# Parse useragent string and return data
+def parse_useragent(ua_string):
+    data = parse(ua_string)
+    return {
+        "device": data.is_pc and "PC" or data.device.family,
+        "os": ("%s %s" % (data.os.family, data.os.version_string)).strip(),
+        "browser": ("%s %s" % (data.browser.family, data.browser.version_string)).strip(),
+        "is_mobile": data.is_mobile
+    }
 
 # Prepare custom Flask response with additional options like CORS enabled
 def prepare_response(data, status, output_format="json", callback=None, root="geoip"):
