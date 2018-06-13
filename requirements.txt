@@ -2,6 +2,6 @@ dicttoxml==1.7.4
 Flask==1.0.2
 Flask-Limiter==1.0.1
 geoip2==2.9.0
-user-agents=1.1.0
+user-agents==1.1.0
 validators==0.12.1
 waitress==1.1.0
