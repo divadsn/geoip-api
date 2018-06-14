@@ -21,10 +21,9 @@ def index():
     return app.send_static_file("index.html")
 
 # Return geolocation data for provided IP address, with different language optional
-@app.route("/api/", defaults={"ip_address": None, "language": app.config['LANGUAGE']})
-@app.route("/api/<ip_address>", defaults={"language": app.config['LANGUAGE']})
-@app.route("/api/<ip_address>/<language>")
-def geoip(ip_address, language):
+@app.route("/api/", defaults={"ip_address": None})
+@app.route("/api/<ip_address>")
+def geoip(ip_address):
     # Get additional parameters from request
     output_format = request.args.get("output_format") or app.config['OUTPUT_FORMAT']
     callback = request.args.get("callback")
