@@ -9,7 +9,7 @@ from waitress import serve
 from utils import fetch_geoip, parse_useragent, prepare_response, error
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 app.config.from_object(config)
 
 # Initialize limiter
@@ -18,7 +18,7 @@ limiter = Limiter(app, key_func=get_remote_address, default_limits=[app.config['
 # API Docs and about page
 @app.route("/")
 def index():
-    return "Hello World!"
+    return app.send_static_file("index.html")
 
 # Return geolocation data for provided IP address, with different language optional
 @app.route("/api/<ip_address>", defaults={"language": app.config['LANGUAGE']})
