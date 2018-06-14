@@ -38,14 +38,22 @@ def geoip(ip_address, language):
     except Exception as ex:
         return error(str(ex), 404, output_format, callback)
 
-    # Add useragent data to response
-    data['useragent'] = parse_useragent(request.user_agent.string)
-
     # Strip off empty sections
     for k in [k for k,v in data.items() if not v or None]:
         del data[k]
 
     return prepare_response(data, 200, output_format, callback)
+
+# Return useragent data parsed from provided string or request
+@app.route("/ua")
+def user_agent():
+    # Get additional parameters from request
+    output_format = request.args.get("output_format") or app.config['OUTPUT_FORMAT']
+    callback = request.args.get("callback")
+
+    # Parse useragent string and give response
+    ua_string = request.args.get("s") or request.user_agent.string
+    return prepare_response(parse_useragent(ua_string), 200, output_format, callback)
 
 # Give a unfunny 404 not found message back
 @app.errorhandler(404)
