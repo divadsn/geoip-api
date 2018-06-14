@@ -21,6 +21,7 @@ def index():
     return app.send_static_file("index.html")
 
 # Return geolocation data for provided IP address, with different language optional
+@app.route("/api/", defaults={"ip_address": None, "language": app.config['LANGUAGE']})
 @app.route("/api/<ip_address>", defaults={"language": app.config['LANGUAGE']})
 @app.route("/api/<ip_address>/<language>")
 def geoip(ip_address, language):
@@ -29,6 +30,7 @@ def geoip(ip_address, language):
     callback = request.args.get("callback")
 
     # Check if ip_address is a valid IPv4 or IPv6 address
+    ip_address = request.remote_addr if ip_address == None else ip_address
     if not ipv4(ip_address) and not ipv6(ip_address):
         return error(ip_address + " does not appear to be an IPv4 or IPv6 address", 400, output_format, callback)
 
@@ -53,7 +55,7 @@ def user_agent():
 
     # Parse useragent string and give response
     ua_string = request.args.get("s") or request.user_agent.string
-    return prepare_response(parse_useragent(ua_string), 200, output_format, callback)
+    return prepare_response(parse_useragent(ua_string), 200, output_format, callback, "useragent")
 
 # Give a unfunny 404 not found message back
 @app.errorhandler(404)
