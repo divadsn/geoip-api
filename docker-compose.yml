@@ -13,7 +13,7 @@ services:
       - ./config.py:/src/config.py
 
   geoip-update:
-    image: divadsn/maxmind-geoipupdate:latest
+    image: divadsn/geoip-update:latest
     restart: always
     volumes:
       - ./data:/usr/share/GeoIP
