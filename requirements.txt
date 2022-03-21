@@ -4,4 +4,4 @@ Flask-Limiter==1.0.1
 geoip2==2.9.0
 user-agents==1.1.0
 validators==0.12.1
-waitress==1.4.3
+waitress==2.1.1
