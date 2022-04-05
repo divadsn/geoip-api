@@ -11,7 +11,11 @@ app = FastAPI(
     title="GeoIP API",
     description="A restful GeoIP API powered by MaxMind GeoLite2.",
     version="1.0",
-    docs_url="/",
+    license_info={
+        "name": "MIT License",
+        "url": "https://github.com/divadsn/geoip-api/blob/master/LICENSE",
+    },
+    docs_url="/docs/",
     redoc_url=None,
     openapi_url="/api/openapi.json",
 )
@@ -25,11 +29,11 @@ async def limiter_identifier(request: Request):
     forwarded = request.headers.get("X-Forwarded-For")
 
     if forwarded:
-        ip = forwarded.split(",")[0]
+        ip_address = forwarded.split(",")[0]
     else:
-        ip = request.client.host
+        ip_address = request.client.host
 
-    return ip
+    return ip_address
 
 
 @app.on_event("startup")
