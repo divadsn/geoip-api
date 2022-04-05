@@ -1,10 +1,15 @@
+from pathlib import Path
+
 import aioredis
 
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from fastapi_limiter import FastAPILimiter
 
 from geoip_api.config import REDIS_URL
 from geoip_api.routes import router
+
+BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(
     debug=False,
@@ -21,6 +26,7 @@ app = FastAPI(
 )
 
 app.include_router(router)
+app.mount("/", StaticFiles(directory=Path(BASE_DIR, "static"), html=True))
 
 redis = aioredis.from_url(REDIS_URL, encoding="utf8", decode_responses=True)
 

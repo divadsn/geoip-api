@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w==" crossorigin="anonymous">
+
+    <!-- Leaflet.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0-beta.3/leaflet.css" rel="stylesheet" integrity="sha512-NTS862YmkhJyv1vfMq8LMX1mvv5ts6t2CWwnIj8c2pr575a4ySHmKFao02m09Y0h/c4hqN7XaEPFdwmrosi8Ww==" crossorigin="anonymous">
+
+    <!-- Flag Icon CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/css/flag-icons.min.css" rel="stylesheet" integrity="sha512-UwbBNAFoECXUPeDhlKR3zzWU3j8ddKIQQsDOsKhXQGdiB5i3IHEXr9kXx82+gaHigbNKbTDp3VY/G6gZqva6ZQ==" crossorigin="anonymous">
+
+    <title>GeoIP API</title>
+  </head>
+  <body class="bg-dark">
+    <!-- Page content -->
+    <main class="container h-100">
+      <div class="row min-vh-100 justify-content-center align-items-center">
+        <div class="col-lg-6 py-5">
+          <div class="card">
+            <div class="card-header">GeoIP Location</div>
+            <div class="ratio ratio-16x9 card-img-top" id="map"></div>
+            <div class="card-body">
+              <table class="table table-borderless mb-0">
+                <tbody>
+                  <tr>
+                    <th scope="row">IP Address</th>
+                    <td id="ip_address"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Hostname</th>
+                    <td id="hostname"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Country</th>
+                    <td id="country"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">City</th>
+                    <td id="city"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">ASN</th>
+                    <td id="asn"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-footer">
+              <small><a href="/docs/">API Documentation</a></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Leaflet.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0-beta.3/leaflet.js" integrity="sha512-n5GDt1jvgAr2K3S6hFiBlLFEIBfDKwpkZP5+AXkLoQxKHO3T0PlgcuFPwlLNtvCk1xZIzf5oPBdTOcMURuhBmg==" crossorigin="anonymous"></script>
+
+    <!-- Custom map -->
+    <script src="./map.js"></script>
+
+    <!-- GeoIP.js -->
+    <script src="/api/?callback=geoip"></script>
+  </body>
+</html>
