@@ -6,26 +6,26 @@ services:
     depends_on:
       - redis
     environment:
-      - WEB_CONCURRENCY=4
-      - FORWARDED_ALLOW_IPS="172.32.10.1"
-      - REDIS_URL="redis://:${REDIS_PASSWORD}@redis:6379/"
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY}
+      - FORWARDED_ALLOW_IPS=172.16.23.1
+      - REDIS_URL=redis://redis:6379/
       - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE}
       - INCLUDE_ASN=${INCLUDE_ASN}
+    ports:
+      - 8069:8069/tcp
     volumes:
       - ./data:/usr/share/GeoIP
     networks:
       default:
-        ipv4_address: 172.32.10.2
+        ipv4_address: 172.16.23.2
         aliases:
           - api
   redis:
-    build: redis
+    image: redis:6.0.7-alpine
     restart: always
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
       default:
-        ipv4_address: 172.32.10.3
+        ipv4_address: 172.16.23.3
         aliases:
           - redis
   update:
@@ -34,12 +34,12 @@ services:
     environment:
       - ACCOUNT_ID=${ACCOUNT_ID}
       - LICENSE_KEY=${LICENSE_KEY}
-      - EDITION_IDS="GeoLite2-ASN GeoLite2-City GeoLite2-Country"
+      - EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country
     volumes:
       - ./data:/usr/share/GeoIP
     networks:
       default:
-        ipv4_address: 172.32.10.4
+        ipv4_address: 172.16.23.4
         aliases:
           - update
 
@@ -49,4 +49,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.32.10.0/24
+        - subnet: 172.16.23.0/24
