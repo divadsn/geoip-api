@@ -1,19 +1,52 @@
-version: '2.1'
-
+version: "3.8"
 services:
-  geoip-api:
-    image: divadsn/geoip-api:latest
+  api:
+    build: .
     restart: always
     depends_on:
-      - geoip-update
-    ports:
-      - 8069:8069/tcp
+      - redis
+    environment:
+      - WEB_CONCURRENCY=4
+      - FORWARDED_ALLOW_IPS="172.32.10.1"
+      - REDIS_URL="redis://:${REDIS_PASSWORD}@redis:6379/"
+      - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE}
+      - INCLUDE_ASN=${INCLUDE_ASN}
     volumes:
       - ./data:/usr/share/GeoIP
-      - ./config.py:/src/config.py
-
-  geoip-update:
-    image: divadsn/geoip-update:latest
+    networks:
+      default:
+        ipv4_address: 172.32.10.2
+        aliases:
+          - api
+  redis:
+    build: redis
     restart: always
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      default:
+        ipv4_address: 172.32.10.3
+        aliases:
+          - redis
+  update:
+    image: tkrs/maxmind-geoipupdate:latest
+    restart: always
+    environment:
+      - ACCOUNT_ID=${ACCOUNT_ID}
+      - LICENSE_KEY=${LICENSE_KEY}
+      - EDITION_IDS="GeoLite2-ASN GeoLite2-City GeoLite2-Country"
     volumes:
       - ./data:/usr/share/GeoIP
+    networks:
+      default:
+        ipv4_address: 172.32.10.4
+        aliases:
+          - update
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.32.10.0/24
