@@ -23,7 +23,13 @@
         <div class="col-lg-6 py-5">
           <div class="card">
             <div class="card-header">GeoIP Location</div>
-            <div class="ratio ratio-16x9 card-img-top" id="map"></div>
+            <div class="ratio ratio-16x9" id="map"></div>
+            <form class="border-bottom p-3" id="lookup">
+              <div class="input-group">
+                <input class="form-control" type="text" placeholder="Enter an IPv4 or IPv6 Address..." id="ip" required>
+                <button class="btn btn-success" type="submit">Lookup</button>
+              </div>
+            </form>
             <div class="card-body">
               <table class="table table-borderless mb-0">
                 <tbody>
