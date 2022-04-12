@@ -13,6 +13,9 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1IjoiY29kZWJ1Y2tldCIsImEiOiJjajF0cGVkcmswMDMwMzJyemIxYmxncnpiIn0.Y6Cnw8QVXgLXAPdsc2E0Nw'
 }).addTo(map);
 
+// Add a scale bar to the map
+L.control.scale().addTo(map);
+
 function lookup(ip) {
     let ipAddress = ip ? encodeURIComponent(ip) : '';
     let xhr = new XMLHttpRequest();
