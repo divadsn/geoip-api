@@ -18,13 +18,13 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 L.control.scale().addTo(map);
 
 function lookup(ip) {
-    let ipAddress = ip ? encodeURIComponent(ip) : '';
+    let ipAddress = ip || '';
     let xhr = new XMLHttpRequest();
 
     // Set IP address in URL
     window.location.hash = '#/' + ipAddress;
 
-    xhr.open('GET', '/api/' + ipAddress, true);
+    xhr.open('GET', '/api/' + encodeURIComponent(ipAddress), true);
     xhr.responseType = 'json';
     xhr.onload = function() {
         // Check if we have a valid response
@@ -71,5 +71,5 @@ document.forms.lookup.onsubmit = function(e) {
 
 window.onload = function(e) {
     // Use the IP address from the URL if specified
-    lookup(window.location.hash.slice(2));
+    lookup(decodeURIComponent(window.location.hash.slice(2)));
 };
