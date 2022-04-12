@@ -3,6 +3,7 @@
 var map = L.map('map').setView([0, 0], 1);
 var markerGroup = new L.FeatureGroup().addTo(map);
 
+// Load map tiles from Mapbox
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     minZoom: 1,
@@ -10,7 +11,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
-    accessToken: 'pk.eyJ1IjoiY29kZWJ1Y2tldCIsImEiOiJjajF0cGVkcmswMDMwMzJyemIxYmxncnpiIn0.Y6Cnw8QVXgLXAPdsc2E0Nw'
+    accessToken: 'pk.eyJ1IjoiY29kZWJ1Y2tldCIsImEiOiJjbDF3bWYycTMwNzVzM2lwOGQzOXAwcXpjIn0.f1KUQhfW60Y-ShBIG95GSQ'
 }).addTo(map);
 
 // Add a scale bar to the map
