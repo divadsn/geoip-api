@@ -37,11 +37,19 @@ function lookup(ip) {
     xhr.send();
 }
 
+function getCountryFlag(country) {
+    if (country.name && country.iso_code) {
+        return country.name + '&ensp;<span class="flag-icon flag-icon-' + country.iso_code.toLowerCase() + '"></span>';
+    } else if (country.name) {
+        return country.name;
+    }
+}
+
 function showResult(response) {
     // Load the response details into the table
     document.getElementById('ip_address').innerText = response.ip_address;
     document.getElementById('hostname').innerText = response.hostname || response.ip_address;
-    document.getElementById('country').innerHTML = response.country.name + '&ensp;<span class="flag-icon flag-icon-' + response.country.iso_code.toLowerCase() + '"></span>';
+    document.getElementById('country').innerHTML = getCountryFlag(response.country) || 'Not available';
     document.getElementById('city').innerText = response.city.name || 'Not available';
     document.getElementById('asn').innerText = 'AS' + response.asn.id + ' - ' + response.asn.name;
 
