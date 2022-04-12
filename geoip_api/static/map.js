@@ -13,29 +13,28 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1IjoiY29kZWJ1Y2tldCIsImEiOiJjajF0cGVkcmswMDMwMzJyemIxYmxncnpiIn0.Y6Cnw8QVXgLXAPdsc2E0Nw'
 }).addTo(map);
 
-document.getElementById('lookup').onsubmit = function(e) {
-    e.preventDefault();
-
-    let ipAddress = document.getElementById('ip').value;
+function lookup(ip) {
+    let ipAddress = ip ? encodeURIComponent(ip) : '';
     let xhr = new XMLHttpRequest();
+
+    // Set IP address in URL
+    window.location.hash = '#/' + ipAddress;
 
     xhr.open('GET', '/api/' + ipAddress, true);
     xhr.responseType = 'json';
     xhr.onload = function() {
         // Check if we have a valid response
         if (xhr.status >= 200 && xhr.status < 400) {
-            geoip(xhr.response);
+            showResult(xhr.response);
         } else {
             alert('Invalid public IPv4 or IPv6 Address');
         }
     };
     xhr.send();
+}
 
-    // Reset form after submit
-    e.target.reset();
-};
-
-function geoip(response) {
+function showResult(response) {
+    // Load the response details into the table
     document.getElementById('ip_address').innerText = response.ip_address;
     document.getElementById('hostname').innerText = response.hostname || response.ip_address;
     document.getElementById('country').innerHTML = response.country.name + '&ensp;<span class="flag-icon flag-icon-' + response.country.iso_code.toLowerCase() + '"></span>';
@@ -54,3 +53,19 @@ function geoip(response) {
         padding: [50, 50]
     });
 }
+
+document.forms.lookup.onsubmit = function(e) {
+    // Stop form from submitting
+    e.preventDefault();
+
+    // Send a request to API with IP address and wait
+    lookup(document.getElementById('ip').value);
+
+    // Reset form after submit
+    e.target.reset();
+};
+
+window.onload = function(e) {
+    // Use the IP address from the URL if specified
+    lookup(window.location.hash.slice(2));
+};
