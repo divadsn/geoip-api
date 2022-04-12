@@ -51,7 +51,7 @@ function showResult(response) {
     document.getElementById('hostname').innerText = response.hostname || response.ip_address;
     document.getElementById('country').innerHTML = getCountryFlag(response.country) || 'Not available';
     document.getElementById('city').innerText = response.city.name || 'Not available';
-    document.getElementById('asn').innerText = 'AS' + response.asn.id + ' - ' + response.asn.name;
+    document.getElementById('asn').innerText = response.asn ? 'AS' + response.asn.id + ' - ' + response.asn.name : 'Unknown';
 
     // Remove marker before creating new
     markerGroup.clearLayers();
