@@ -60,3 +60,11 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     await redis.close()
+
+
+@app.get("/healthcheck", include_in_schema=False)
+async def healthcheck():
+    return {
+        "success": True,
+        "message": "healthy",
+    }
