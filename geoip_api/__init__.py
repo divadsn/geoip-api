@@ -42,6 +42,16 @@ async def limiter_identifier(request: Request):
     return ip_address
 
 
+@app.middleware("http")
+async def add_cache_control_header(request: Request, call_next):
+    response = await call_next(request)
+
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-cache"
+
+    return response
+
+
 @app.on_event("startup")
 async def startup_event():
     await FastAPILimiter.init(redis, identifier=limiter_identifier)
