@@ -18,7 +18,7 @@ from geoip_api.models import (
     GeoIPLocation,
     GeoIPResponse,
 )
-from geoip_api.utils import get_hostname_by_addr, get_localized_name
+from geoip_api.utils import LocaleCode, get_hostname_by_addr, get_localized_name
 
 router = APIRouter(
     prefix="/api",
@@ -82,7 +82,7 @@ def _get_asn_record(ip_address: Union[IPv4Address, IPv6Address]) -> Optional[Geo
 
 @router.get("/", summary="Get GeoIP record for current IP address", response_model=GeoIPResponse)
 async def get_geoip(
-    request: Request, lang: str = None, callback: Optional[str] = None
+    request: Request, lang: Optional[LocaleCode] = None, callback: Optional[str] = None
 ) -> Union[GeoIPResponse, str]:
     return await get_geoip_for_ip(request.client.host, lang, callback)
 
@@ -90,7 +90,7 @@ async def get_geoip(
 @router.get("/{ip_address}", summary="Get GeoIP record for specific IP address", response_model=GeoIPResponse)
 async def get_geoip_for_ip(
     ip_address: Union[IPv4Address, IPv6Address],
-    lang: str = None,
+    lang: Optional[LocaleCode] = None,
     callback: Optional[str] = None,
 ) -> Union[GeoIPResponse, str]:
     # Default language if none provided
