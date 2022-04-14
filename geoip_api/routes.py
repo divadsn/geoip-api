@@ -10,7 +10,7 @@ from geoip2.database import Reader
 from geoip2.errors import AddressNotFoundError
 from geoip2.models import City
 
-from geoip_api.config import DEFAULT_LANGUAGE, INCLUDE_ASN, MMDB_PATH
+from geoip_api.config import DEFAULT_LOCALE, INCLUDE_ASN, MMDB_PATH
 from geoip_api.models import (
     GeoIPASN,
     GeoIPCity,
@@ -82,21 +82,19 @@ def _get_asn_record(ip_address: Union[IPv4Address, IPv6Address]) -> Optional[Geo
 
 @router.get("/", summary="Get GeoIP record for current IP address", response_model=GeoIPResponse)
 async def get_geoip(
-    request: Request, lang: Optional[LocaleCode] = None, callback: Optional[str] = None
-) -> Union[GeoIPResponse, str]:
+    request: Request,
+    lang: LocaleCode = DEFAULT_LOCALE,
+    callback: Optional[str] = None,
+) -> Union[GeoIPResponse, Response]:
     return await get_geoip_for_ip(request.client.host, lang, callback)
 
 
 @router.get("/{ip_address}", summary="Get GeoIP record for specific IP address", response_model=GeoIPResponse)
 async def get_geoip_for_ip(
     ip_address: Union[IPv4Address, IPv6Address],
-    lang: Optional[LocaleCode] = None,
+    lang: LocaleCode = DEFAULT_LOCALE,
     callback: Optional[str] = None,
-) -> Union[GeoIPResponse, str]:
-    # Default language if none provided
-    if not lang:
-        lang = DEFAULT_LANGUAGE
-
+) -> Union[GeoIPResponse, Response]:
     # Load GeoLite2 City database
     with Reader(path.join(MMDB_PATH, "GeoLite2-City.mmdb")) as reader:
         try:

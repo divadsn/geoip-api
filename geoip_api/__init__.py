@@ -17,7 +17,7 @@ def get_application() -> FastAPI:
         debug=False,
         title="GeoIP API",
         description="A restful GeoIP API powered by MaxMind GeoLite2.",
-        version="1.0",
+        version="1.2",
         license_info={
             "name": "MIT License",
             "url": "https://github.com/divadsn/geoip-api/blob/master/LICENSE",
