@@ -77,7 +77,5 @@ document.forms.lookup.onsubmit = function(e) {
     e.target.reset();
 };
 
-window.onload = function(e) {
-    // Use the IP address from the URL if specified
-    lookup(decodeURIComponent(window.location.hash.slice(2)));
-};
+// Use the IP address from the URL if specified
+lookup(decodeURIComponent(window.location.hash.slice(2)));
