@@ -27,7 +27,7 @@ def get_application() -> FastAPI:
             "url": "https://github.com/divadsn/geoip-api/blob/master/LICENSE",
         },
         docs_url="/docs/",
-        redoc_url=None,
+        redoc_url="/redoc/",
         openapi_url="/api/openapi.json",
     )
 
