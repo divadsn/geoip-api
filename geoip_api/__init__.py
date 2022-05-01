@@ -1,13 +1,17 @@
+from datetime import datetime
 from pathlib import Path
 
 import aioredis
 
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from fastapi_limiter import FastAPILimiter
 
-from geoip_api.config import REDIS_URL
+from geoip_api.config import MMDB_PATH, REDIS_URL
 from geoip_api.routes import router
+from geoip_api.utils import get_metadata
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -28,6 +32,8 @@ def get_application() -> FastAPI:
     )
 
     redis = aioredis.from_url(REDIS_URL, encoding="utf8", decode_responses=True)
+
+    templates = Jinja2Templates(directory=Path(BASE_DIR, "templates"))
 
     async def limiter_identifier(request: Request):
         forwarded = request.headers.get("X-Forwarded-For")
@@ -57,14 +63,24 @@ def get_application() -> FastAPI:
         await redis.close()
 
     @app.get("/healthcheck", include_in_schema=False)
-    async def healthcheck():
+    async def get_healthcheck():
         return {
             "success": True,
             "message": "healthy",
         }
+    
+    @app.get("/", include_in_schema=False)
+    async def get_index(request: Request) -> HTMLResponse:
+        metadata = get_metadata(Path(MMDB_PATH, "GeoLite2-City.mmdb"))
+        return templates.TemplateResponse(
+            "index.html", {
+                "request": request,
+                "build_date": datetime.utcfromtimestamp(metadata.build_epoch),
+            }
+        )
 
     app.include_router(router)
-    app.mount("/", StaticFiles(directory=Path(BASE_DIR, "static"), html=True))
+    app.mount("/", StaticFiles(directory=Path(BASE_DIR, "static"), html=True), name="static")
 
     return app
 

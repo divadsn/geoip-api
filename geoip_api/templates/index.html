@@ -71,6 +71,9 @@
               <small class="text-muted">Powered by MaxMind GeoLite2</small>
             </div>
           </div>
+          <div class="text-white text-center mt-5">
+            <small>Last update: {{ build_date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+          </div>
         </div>
       </div>
     </main>
@@ -79,6 +82,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0-beta.3/leaflet.js" integrity="sha512-n5GDt1jvgAr2K3S6hFiBlLFEIBfDKwpkZP5+AXkLoQxKHO3T0PlgcuFPwlLNtvCk1xZIzf5oPBdTOcMURuhBmg==" crossorigin="anonymous"></script>
 
     <!-- Custom map -->
-    <script src="./map.js"></script>
+    <script src="/map.js"></script>
   </body>
 </html>

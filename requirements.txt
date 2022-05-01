@@ -2,6 +2,6 @@ aioredis
 fastapi
 git+https://github.com/long2ice/fastapi-limiter
 geoip2
+jinja2
 pydantic
-pytz
 uvicorn
