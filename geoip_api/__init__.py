@@ -4,7 +4,7 @@ from pathlib import Path
 import aioredis
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi_limiter import FastAPILimiter
@@ -68,6 +68,10 @@ def get_application() -> FastAPI:
             "success": True,
             "message": "healthy",
         }
+
+    @app.get("/sitemap.xml", include_in_schema=False)
+    async def get_sitemap() -> FileResponse:
+        return FileResponse(Path(BASE_DIR, "static", "sitemap.xml"))
     
     @app.get("/", include_in_schema=False)
     async def get_index(request: Request) -> HTMLResponse:
@@ -80,7 +84,7 @@ def get_application() -> FastAPI:
         )
 
     app.include_router(router)
-    app.mount("/", StaticFiles(directory=Path(BASE_DIR, "static"), html=True), name="static")
+    app.mount("/static", StaticFiles(directory=Path(BASE_DIR, "static")), name="static")
 
     return app
 
