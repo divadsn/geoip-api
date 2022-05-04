@@ -4,6 +4,7 @@ from pathlib import Path
 import aioredis
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -29,6 +30,13 @@ def get_application() -> FastAPI:
         docs_url="/docs/",
         redoc_url="/redoc/",
         openapi_url="/api/openapi.json",
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     redis = aioredis.from_url(REDIS_URL, encoding="utf8", decode_responses=True)
