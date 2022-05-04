@@ -97,6 +97,8 @@ async def get_geoip_for_ip(
 ) -> Union[GeoIPResponse, Response]:
     # Load GeoLite2 City database
     with Reader(path.join(MMDB_PATH, "GeoLite2-City.mmdb")) as reader:
+        last_update = reader.metadata().build_epoch
+
         try:
             response = reader.city(ip_address)
         except AddressNotFoundError as ex:
@@ -110,6 +112,7 @@ async def get_geoip_for_ip(
         country=_get_country_record(response, lang),
         location=_get_location_record(response),
         asn=_get_asn_record(ip_address),
+        last_update=last_update,
     )
 
     # Return JSONP if cross-origin callback is set

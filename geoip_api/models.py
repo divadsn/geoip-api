@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional, Union
 from ipaddress import IPv4Address, IPv6Address
 
@@ -47,3 +48,4 @@ class GeoIPResponse(BaseModel):
     country: GeoIPCountry = Field(title="Country", description="The country record associated with the IP address.")
     location: GeoIPLocation = Field(title="Location", description="The location record associated with the IP address.")
     asn: Optional[GeoIPASN] = Field(title="ASN", description="The ASN record associated with the IP address.")
+    last_update: datetime = Field(title="Last Update", description="The date of last GeoIP database update.")
